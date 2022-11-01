@@ -22,7 +22,7 @@ call conda --version
 echo.
 
 @rem activate the environment
-call conda activate .\stable-diffusion\env
+@REM call conda activate .\stable-diffusion\env
 
 call where python
 call python --version
