@@ -16,17 +16,17 @@ set umamba_exists=F
 @rem figure out whether git and conda needs to be installed
 if exist "%INSTALL_ENV_DIR%" set PATH=%INSTALL_ENV_DIR%;%INSTALL_ENV_DIR%\Library\bin;%INSTALL_ENV_DIR%\Scripts;%INSTALL_ENV_DIR%\Library\usr\bin;%PATH%
 
-set PACKAGES_TO_INSTALL=
+set PACKAGES_TO_INSTALL= conda git
 
-if not exist "%LEGACY_INSTALL_ENV_DIR%\etc\profile.d\conda.sh" (
-    if not exist "%INSTALL_ENV_DIR%\etc\profile.d\conda.sh" set PACKAGES_TO_INSTALL=%PACKAGES_TO_INSTALL% conda
-)
+@REM if not exist "%LEGACY_INSTALL_ENV_DIR%\etc\profile.d\conda.sh" (
+@REM     if not exist "%INSTALL_ENV_DIR%\etc\profile.d\conda.sh" set PACKAGES_TO_INSTALL=%PACKAGES_TO_INSTALL% conda
+@REM )
 
-call git --version >.tmp1 2>.tmp2
-if "%ERRORLEVEL%" NEQ "0" set PACKAGES_TO_INSTALL=%PACKAGES_TO_INSTALL% git
+@REM call git --version >.tmp1 2>.tmp2
+@REM if "%ERRORLEVEL%" NEQ "0" set PACKAGES_TO_INSTALL=%PACKAGES_TO_INSTALL% git
 
-call "%MAMBA_ROOT_PREFIX%\micromamba.exe" --version >.tmp1 2>.tmp2
-if "%ERRORLEVEL%" EQU "0" set umamba_exists=T
+@REM call "%MAMBA_ROOT_PREFIX%\micromamba.exe" --version >.tmp1 2>.tmp2
+@REM if "%ERRORLEVEL%" EQU "0" set umamba_exists=T
 
 @rem (if necessary) install git and conda into a contained environment
 if "%PACKAGES_TO_INSTALL%" NEQ "" (

@@ -1,5 +1,7 @@
 @echo off
 
+set INSTALL_ENV_DIR=%cd%\installer_files\env
+
 @copy sd-ui-files\scripts\on_env_start.bat scripts\ /Y
 @copy sd-ui-files\scripts\bootstrap.bat scripts\ /Y
 
@@ -58,11 +60,11 @@ if exist "Open Developer Console.cmd" del "Open Developer Console.cmd"
 @if "%ERRORLEVEL%" EQU "0" (
     @echo "Packages necessary for Stable Diffusion were already installed"
 
-    @call conda activate .\env
+    @call conda activate "%INSTALL_ENV_DIR%"
 ) else (
     @echo. & echo "Downloading packages necessary for Stable Diffusion.." & echo. & echo "***** This will take some time (depending on the speed of the Internet connection) and may appear to be stuck, but please be patient ***** .." & echo.
 
-    @rmdir /s /q .\env
+    @REM @rmdir /s /q .\env
 
     @REM prevent conda from using packages from the user's home directory, to avoid conflicts
     @set PYTHONNOUSERSITE=1
@@ -71,15 +73,15 @@ if exist "Open Developer Console.cmd" del "Open Developer Console.cmd"
     set TMP=%cd%\tmp
     set TEMP=%cd%\tmp
 
-    @call conda env create --prefix env -f environment.yaml || (
+    @call conda env create --prefix "%INSTALL_ENV_DIR%" -f environment.yaml || (
         @echo. & echo "Error installing the packages necessary for Stable Diffusion. Sorry about that, please try to:" & echo "  1. Run this installer again." & echo "  2. If that doesn't fix it, please try the common troubleshooting steps at https://github.com/cmdr2/stable-diffusion-ui/wiki/Troubleshooting" & echo "  3. If those steps don't help, please copy *all* the error messages in this window, and ask the community at https://discord.com/invite/u9yhsFmEkB" & echo "  4. If that doesn't solve the problem, please file an issue at https://github.com/cmdr2/stable-diffusion-ui/issues" & echo "Thanks!" & echo.
         pause
         exit /b
     )
 
-    @call conda activate .\env
+    @call conda activate "%INSTALL_ENV_DIR%"
 
-    @call conda install -c conda-forge -y --prefix env antlr4-python3-runtime=4.8 || (
+    @call conda install -c conda-forge -y --prefix "%INSTALL_ENV_DIR%" antlr4-python3-runtime=4.8 || (
         @echo. & echo "Error installing antlr4-python3-runtime for Stable Diffusion. Sorry about that, please try to:" & echo "  1. Run this installer again." & echo "  2. If that doesn't fix it, please try the common troubleshooting steps at https://github.com/cmdr2/stable-diffusion-ui/wiki/Troubleshooting" & echo "  3. If those steps don't help, please copy *all* the error messages in this window, and ask the community at https://discord.com/invite/u9yhsFmEkB" & echo "  4. If that doesn't solve the problem, please file an issue at https://github.com/cmdr2/stable-diffusion-ui/issues" & echo "Thanks!" & echo.
         pause
         exit /b
@@ -168,7 +170,7 @@ set PATH=C:\Windows\System32;%PATH%
     set TMP=%cd%\tmp
     set TEMP=%cd%\tmp
 
-    @call conda install -c conda-forge -y --prefix env uvicorn fastapi || (
+    @call conda install -c conda-forge -y --prefix "%INSTALL_ENV_DIR%" uvicorn fastapi || (
         echo "Error installing the packages necessary for Stable Diffusion UI. Sorry about that, please try to:" & echo "  1. Run this installer again." & echo "  2. If that doesn't fix it, please try the common troubleshooting steps at https://github.com/cmdr2/stable-diffusion-ui/wiki/Troubleshooting" & echo "  3. If those steps don't help, please copy *all* the error messages in this window, and ask the community at https://discord.com/invite/u9yhsFmEkB" & echo "  4. If that doesn't solve the problem, please file an issue at https://github.com/cmdr2/stable-diffusion-ui/issues" & echo "Thanks!"
         pause
         exit /b
@@ -331,9 +333,7 @@ echo. > "..\models\stable-diffusion\Put your custom ckpt files here.txt"
 
 @set SD_DIR=%cd%
 
-@cd env\lib\site-packages
-@set PYTHONPATH=%SD_DIR%;%cd%
-@cd ..\..\..
+@set PYTHONPATH=%SD_DIR%;%INSTALL_ENV_DIR%\lib\site-packages
 @echo PYTHONPATH=%PYTHONPATH%
 
 call where python
